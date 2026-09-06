@@ -1,11 +1,11 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:window_manager/window_manager.dart';
 
 import '../app/theme.dart';
 import '../controllers/meeting_controller.dart';
 import '../domain/meeting.dart';
+import '../services/window_actions.dart';
 
 class MeetHome extends StatefulWidget {
   const MeetHome({
@@ -133,7 +133,7 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onPanStart: isDesktop ? (_) => windowManager.startDragging() : null,
+      onPanStart: isDesktop ? (_) => startDragging() : null,
       child: SizedBox(
         height: 48,
         child: Padding(

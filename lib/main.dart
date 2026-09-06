@@ -1,17 +1,15 @@
-import 'dart:io';
-
 import 'package:flutter/widgets.dart';
-import 'package:window_manager/window_manager.dart';
 
 import 'app/atmeet_app.dart';
-import 'services/desktop_window_service.dart';
+import 'services/platform_shell.dart';
+import 'services/window_bootstrap.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final isDesktop = Platform.isMacOS || Platform.isWindows;
+  final isDesktop = isDesktopPlatform();
   if (isDesktop) {
-    await windowManager.ensureInitialized();
-    await DesktopWindowService.prepareWindow();
+    await ensureWindowManager();
+    await preparePlatformWindow();
   }
   runApp(AtMeetApp(isDesktop: isDesktop));
 }

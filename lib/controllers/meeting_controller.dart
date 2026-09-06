@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
@@ -86,14 +85,7 @@ class MeetingController extends ChangeNotifier {
       }
       final now = DateTime.now();
       final id = now.microsecondsSinceEpoch.toString();
-      final root = await _repository.recordingsDirectory();
-      final sessionDirectory = Directory(
-        '${root.path}/${id.substring(0, 8)}-$id',
-      );
-      await sessionDirectory.create(recursive: true);
-      final marker = File('${sessionDirectory.path}/.recording');
-      await marker.writeAsString(now.toIso8601String(), flush: true);
-      final path = '${sessionDirectory.path}/meeting.m4a';
+      final path = await _repository.createRecordingPath(id, now);
       final meeting = Meeting(
         id: id,
         title: 'Meet ${meetings.length + 1}',
@@ -173,10 +165,8 @@ class MeetingController extends ChangeNotifier {
     final path = await _recorder.stop();
     final active = selectedMeeting;
     if (active == null) return;
-    final marker = File(
-      '${File(path ?? active.audioPath!).parent.path}/.recording',
-    );
-    if (await marker.exists()) await marker.delete();
+    final recordedPath = path ?? active.audioPath;
+    if (recordedPath != null) await _repository.finishRecording(recordedPath);
     final completed = active.copyWith(
       durationMs: _stopwatch.elapsedMilliseconds,
       audioPath: path ?? active.audioPath,

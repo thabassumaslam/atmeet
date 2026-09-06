@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:atmeet/app/theme.dart';
 import 'package:atmeet/controllers/meeting_controller.dart';
 import 'package:atmeet/domain/meeting.dart';
@@ -47,7 +45,10 @@ class _MemoryRepository implements MeetingRepository {
   @override
   Future<void> save(List<Meeting> meetings) async {}
   @override
-  Future<Directory> recordingsDirectory() async => Directory.systemTemp;
+  Future<String> createRecordingPath(String id, DateTime createdAt) async =>
+      'test.m4a';
+  @override
+  Future<void> finishRecording(String path) async {}
   @override
   Future<int> recoverRecordingMarkers() async => 0;
 }
